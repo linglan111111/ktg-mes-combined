@@ -1,0 +1,27 @@
+-- 新增 is_check 字段
+ALTER TABLE pro_feedback 
+ADD COLUMN is_check TINYINT DEFAULT 0 COMMENT '是否检查（0:未检查, 1:已检查）';
+
+-- 新增 quantity_labor_scrap 字段
+ALTER TABLE pro_feedback 
+ADD COLUMN quantity_labor_scrap DECIMAL(10,2) DEFAULT 0.00 COMMENT '人工报废数量';
+
+-- 新增 quantity_material_scrap 字段
+ALTER TABLE pro_feedback 
+ADD COLUMN quantity_material_scrap DECIMAL(10,2) DEFAULT 0.00 COMMENT '物料报废数量';
+
+-- 新增 quantity_other_scrap 字段
+ALTER TABLE pro_feedback 
+ADD COLUMN quantity_other_scrap DECIMAL(10,2) DEFAULT 0.00 COMMENT '其他报废数量';
+
+-- 新增 quantity_labor_scrap 字段
+ALTER TABLE qc_ipqc 
+ADD COLUMN quantity_labor_scrap DECIMAL(10,2) DEFAULT 0.00 COMMENT '人工报废数量';
+
+-- 新增 quantity_material_scrap 字段
+ALTER TABLE qc_ipqc 
+ADD COLUMN quantity_material_scrap DECIMAL(10,2) DEFAULT 0.00 COMMENT '物料报废数量';
+
+-- 新增 quantity_other_scrap 字段
+ALTER TABLE qc_ipqc 
+ADD COLUMN quantity_other_scrap DECIMAL(10,2) DEFAULT 0.00 COMMENT '其他报废数量';

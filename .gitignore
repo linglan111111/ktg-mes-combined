@@ -1,0 +1,5 @@
+# 自动生成 
+*.log 
+*.tmp 
+exclude-list.txt 
+sync_*.log 

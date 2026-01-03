@@ -1,0 +1,83 @@
+您好，我在修改这个项目的过程中，遇到了一些BUG，其中一部分我按照自己的理解进行了解决，于下方列出，希望能对这个项目有所帮助。
+
+1.首页以及质量管理/过程校验界面报错
+数据库中表字段缺失导致
+在pro_feedback表中新增四个字段：
+is_check(tinyint)
+quantity_labor_scrap (decimal)
+quantity_material_scrap (decimal)
+quantity_other_scrap (decimal)
+
+在qc_ipqc表中新增三个字段:
+quantity_labor_scrap (DECIMAL)
+quantity_material_scrap (DECIMAL)
+quantity_other_scrap (DECIMAL)
+
+2.质量管理/出货检验 无法新增
+前端传递的参数缺失
+前端表单缺少增减"合格数量"的组件，导致参数中"quantityQualified"为null，后端需要校验合格数量与不合格数量之和是否为检测数量。
+
+3.设备管理/设备类型设置 无法删除设备类型
+后端代码错误
+将DvMachineryTypeController中的remove()方法内的第113行：
+param.setMachineryId(typeId) 修改为：param.setMachineryTypeId(typeId)
+
+4.设备管理/维修单 新增时报错
+前端代码错误
+src\views\mes\dv\repair\index.vue应该将保修日期的value-format改为yyyy-MM-dd HH:mm:ss
+
+5.质量管理/待检任务/退料检验 当合格/不合格数量为0时无法完成质量检验
+后端代码错误
+在QcRqcController的edit()方法中，
+在211行以及214行的sourceLine.setQualityStatus() 语句下方新增wmRtIssueLineService.updateWmRtIssueLine(sourceLine);
+以将生产退料单行的质量状态更新到数据库中
+
+6.仓储管理/盘点任务 选择任意盘点方案后，无法新增盘点任务
+后端代码错误
+WmMaterialStockMapper.xml中：
+if test="params.beginTime != null and params.beginTime != ''"和
+if test="params.endTime != null and params.endTime != ''"
+将beginTime(Date)和endTime(Date)与 空字符串 ' ' 进行了比较
+解决方案：
+将params.beginTime != '' 和 params.endTime != ''
+修改为：params.beginTime.toString() != '' 和 params.endTime.toString() != ''
+
+7.设备管理/点检保养方案 新增保养项目时查询的是点检项目
+原因：
+前端调用查询点检保养项目列表接口时，传入的参数subjectType固定为'CHECK'
+
+8.设备管理/点检记录 新增/修改点检记录时未能根据选择的点检方案自动生成点检项目
+原因：
+后端已实现相关代码，只是未更新到数据库
+解决方案：
+在DvCheckRecordController的add()方法的for循环中的110行下方新增：
+line.setSubjectCode(subject.getSubjectCode());
+dvCheckRecordLineService.insertDvCheckRecordLine(line);
+在DvCheckRecordController的edit()方法的for循环中的153行下方新增：
+line.setSubjectCode(subject.getSubjectCode());
+dvCheckRecordLineService.insertDvCheckRecordLine(line);
+
+9.质量管理/退料检验 修改草稿状态检验单时提交按钮无反应
+
+10.前端外协入库单行请求工具请求地址错误
+原为：
+url: '/mes/wm/oursourcerecptline/list'
+修改为：
+// 查询外协入库单行列表
+export function listOutsourcerecptline(query) {
+return request({
+url: '/mes/wm/outsourcerecptline/list',
+method: 'get',
+params: query
+})
+}
+
+11.外协入库功能的OutsourceRecptTxBean.java中缺失属性
+src/main/java/com/ktg/mes/wm/domain/tx/OutsourceRecptTxBean.java中新增属性以及对应get/set方法：
+private String unitName;
+private Long batchId;
+
+public String getUnitName() {return unitName;}
+public void setUnitName(String unitName) {this.unitName = unitName;}
+public Long getBatchId() {return batchId;}
+public void setBatchId(Long batchId) {this.batchId = batchId;}
