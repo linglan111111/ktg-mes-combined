@@ -3,3 +3,5 @@
 *.tmp 
 exclude-list.txt 
 sync_*.log 
+backend\ktg-admin\src\main\resources\application-druid.yml 
+combined日常同步.bat 
